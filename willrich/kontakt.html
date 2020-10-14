@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Kontakt</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<header>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">VR Holidays</a>
+            <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Platzhalter Kategorien oder direkt zu den FeWo? -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="jagdhuette.html">Jagdhütte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="willrich.html">Haus Willrich</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="kontakt.html">Kontakt</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<header class="jumbotron">
+    <div class="container">
+        <h1 class="display-4">Kontakt</h1>
+        <p class="lead">Schreibt uns eine Nachricht</p>
+    </div>
+</header>
+<section class="container" id="contactForm">
+    <div class="card">
+        <div class="card-header">
+            Kontaktformular
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" name="csrfToken" value="123">
+                <div class="row form-group">
+                    <div class="col-2">
+                        Anrede:
+                    </div>
+                    <div class="col">
+                        <div class="form-check form-check-inline">
+                            <input name="salutation" id="salutationMrs" class="form-check-input" type="radio" value="mrs"><label class="form-check-label" for="salutationMrs"> Frau</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="salutation" id="salutationMr" class="form-check-input" type="radio" value="mr"><label class="form-check-label" for="salutationMr"> Herr</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-2 col-form-label" for="name">
+                        Name:
+                    </label>
+                    <div class="col">
+                        <input type="text" name="name" id="name" placeholder="Name" class="form-control">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-2 col-form-label" for="name">
+                        Email:
+                    </label>
+                    <div class="col">
+                        <input type="text" name="email" id="email" placeholder="Email" class="form-control">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-2 col-form-label" for="subject">
+                        Betreff:
+                    </label>
+                    <div class="col">
+                        <select id="subject" name="subject" class="form-control">
+                            <option>Bitte wählen</option>
+                            <option value="Ferienwohung">Ferienwohnung</option>
+                            <option value="Jagdthütte">Jagdthütte</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-2 col-form-label" for="message">
+                        Nachricht:
+                    </label>
+                    <div class="col">
+                        <textarea id="message" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row form-check">
+                    <div class="offset-2 col">
+                        <input type="checkbox" name="robot" id="robot" class="form-check-input">
+                        <label for="robot" class="form-check-label">Hiermit bestätige ich, dass ich ein Roboter bin.</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary">Anfrage senden</button>
+        </div>
+    </div>
+</section>
+<footer>
+    <span>
+        Nina Gollwig, Leoni Salbert, Michaela Dienhart und Yvette Scholz
+    </span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+.carousel-inner img {
+    width: 100%;
+}
+
+.carousel-inner {
+    height: 35em;
+}
+
+#content-top-row {
+    margin-left: 0;
+}
+
+.features {
+    text-align: center;
+    font-size: 140%;
+}
+
+.feature-icon {
+    width: 2rem;
+    float: left;
+}
+
+.feature-icon img {
+    width: 85%;
+}
+
+.faciliti-item {
+    margin: 1.5rem;
+}
+
+.faciliti-item-description {
+    margin-left: 4rem;
+    font-size: 70%;
+}
+
+#desciption-content {
+    padding: 1rem;
+}
+
+/* Calendar */
+@import url(https://fonts.googleapis.com/css?family=Muli:400,300);
+
+.calendar, .calendar_weekdays, .calendar_content {
+    max-width: 20rem;
+}
+.calendar {
+    margin: auto;
+    font-family:'Muli', sans-serif;
+    font-weight: 500;
+    margin-bottom: 100px;
+}
+.calendar_content, .calendar_weekdays, .calendar_header {
+    position: relative;
+    overflow: hidden;
+}
+.calendar_weekdays div {
+    display:inline-block;
+    vertical-align:top;
+}
+.calendar_weekdays div, .calendar_content div {
+    width: 14.28571%;
+    overflow: hidden;
+    text-align: center;
+    background-color: transparent;
+    color: #6f6f6f;
+    font-size: 20px;
+}
+.calendar_content div {
+    border: 1px solid transparent;
+    float: left;
+}
+.calendar_content div:hover {
+    border: 1px solid #dcdcdc;
+    cursor: default;
+}
+.calendar_content div.blank:hover {
+    cursor: default;
+    border: 1px solid transparent;
+}
+.calendar_content div.past-date {
+    color: #b7b7b7;
+}
+.calendar_content div.today {
+    font-weight: bold;
+    font-size: 20px;
+    color: #87b633;
+    border: 1px solid #dcdcdc;
+}
+.calendar_content div.selected {
+    background-color: #f0f0f0;
+}
+.calendar_header {
+    width: 100%;
+    text-align: center;
+}
+.calendar_header h2 {
+    padding: 0 10px;
+    font-family:'Muli', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: black;
+    float:left;
+    width:70%;
+    margin: 0 0 10px;
+}
+button.switch-month {
+    background-color: transparent;
+    padding: 0;
+    outline: none;
+    border: none;
+    color: #dcdcdc;
+    float: left;
+    width:15%;
+    transition: color .2s;
+}
+button.switch-month:hover {
+    color: #87b633;
+}
+
+footer{
+    padding: 12px;
+    text-align: center;
+    color: black;
+    background: gainsboro;
+}
+
+.row{
+    margin-right: -30px;
+    margin-left: -35px;
+}
+.project-info {
+    margin-bottom: 100px;
+}
+.vr-tour {
+    right: 0;
+    position: absolute;
+    z-index: 2;
+    color: black !important;
+    background: white;
+    border: 2px solid black;
+    margin: 20px;
+    text-transform: uppercase;
+}
+.vr-tour > a {
+    color: black;
+    padding: 10px;
+    display: block;
+}
+.vr-tour > a:hover {
+    text-decoration: none;
+    color: white;
+}
+.vr-tour:hover {
+    background-color: black;
+}

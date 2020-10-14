@@ -1,0 +1,454 @@
+<krpano title="Jagthüte">
+  <display depthmaprendermode="3dmodel" />
+  <!-- <display depthmaprendermode="depthmap" /> -->
+  <!-- depthmaprendermode:
+	 - "depthmap" (default)
+		 - generates an internal 24bit depthmap image
+		 - fastest to load
+		 - no "holes", everything is "connected/filled"
+		 - not perfectly accurate
+	 - "3dmodel"
+		 - uses the 3d model and maps the pano onto it
+		 - slower because the 3d model internally needs to get sub-divided into many small triangles
+-->
+
+  
+
+     
+       <action name="startup" autorun="onstart">
+        if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[4].name); );
+        loadscene(get(startscene), null, MERGE);
+        if(startactions !== null, startactions() );
+        
+    </action>
+
+
+
+
+
+      <action name="tour_loadscene" scope="local" args="scenename">
+        loadscene(get(scenename), null, MERGE|KEEPVIEW|KEEPMOVING , BLEND(2.0));
+    </action>
+
+     <action name="frame">
+        if(hotspot[get(name)],
+        tween(hotspot[get(name)].scale,0.002));
+        delayedcall(nextframe, 0.5, frame2());
+    </action>
+    <action name="frame2">
+        tween(hotspot[get(name)].scale,0.0022);
+        
+        delayedcall(nextframe, 0.5, frame());
+    </action>
+
+
+    <action name="do_crop_animation" scope="local" args="framewidth, frameheight, framerate">
+    <!-- define local variables -->
+    calc(local.xframes, (caller.imagewidth /framewidth) BOR 0);
+    calc(local.frames, xframes * ((caller.imageheight / frameheight) BOR 0));
+    def(local.frame, integer, 0);
+    
+    <!-- set the first frame -->
+    calc(caller.crop, '0|0|' + framewidth + '|' + frameheight);
+    
+    <!-- do the animation -->
+    setinterval(calc('crop_anim_' + caller.name), calc(1.0 / framerate),
+      if(caller.loaded,
+        inc(frame);
+        if(frame GE frames, if(caller.onlastframe !== null, callwith(caller, onlastframe() ) ); set(frame,0); );
+        mod(xpos, frame, xframes);
+        div(ypos, frame, xframes);
+        Math.floor(ypos);
+        mul(xpos, framewidth);
+        mul(ypos, frameheight);
+        calc(caller.crop, xpos + '|' + ypos + '|' + framewidth + '|' + frameheight);
+        ,
+        <!-- stop the interval when the hotspot gets removed -->
+        clearinterval(calc('crop_anim_' + caller.name));
+      );
+    );
+  </action>
+   
+
+
+
+  <!-- SYSTEM FOR HAVING ALL HOTSPOTS FROM EVERY PANORAMA -->
+  
+  <style name="everpano3d_0" panoname="Bad" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene0" />
+  <style name="everpano3d_1" panoname="Flur" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene1" />
+  <style name="everpano3d_2" panoname="Flurzu" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene2" />
+  <style name="everpano3d_3" panoname="Küche" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene3" />
+  <style name="everpano3d_4" panoname="Veranda" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene4" />
+  <style name="everpano3d_5" panoname="Wohnzimmer" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene5" />
+  <style name="everpano3d_6" panoname="Zimmer1" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene6" />
+  <style name="everpano3d_7" panoname="Zimmer2" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene7" />
+  <style name="everpano3d_8" panoname="Zimmer3" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene8" />
+  <!-- SCENES -->
+ 
+
+
+
+
+ <!-- Bad -->
+<scene name="scene0" title="Bad" alt="180" thumburl="panos/0.tiles/snapshot.jpg" autoload="true" >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/0.tiles/preview.jpg" />
+    <image style="everpano3D_0" >
+      <cube url="panos/0.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/0.tiles/0.depth" enabled="true" scale="1.0" />
+    </image>
+ 
+
+ <!--<hotspot
+    name="pfeil" type="image"
+        url="HotspotBilder/pfeil.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-9.44" ty="96.90" tz="49.17" rotationorder="xyz" rx="-90" ry="-40" rz="0" onclick="tour_loadscene(scene1);"/> -->
+
+<hotspot name="zuFlurVonBad" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);"  distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-18.57" ty="30.70" tz="42.42" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="-20" onclick="tour_loadscene(scene1)"  />
+
+       <hotspot  name="Schild_Bad" type="image" url="HotspotBilder/Bad.png" distorted="true" depth="0" depthbuffer="true"
+        torigin="world"
+        tx="-18.00" ty="-26.90" tz="60.77" scale="0.025"
+        title="Schild" rotationorder="xyz" rx="0" rz="0" ry="-30"
+        onclick="if(scale === 0.025, tween(scale, 0.050),tween(scale,0.025));"  /> 
+
+</scene> 
+
+
+
+
+
+
+
+
+  <!-- Flur -->
+<scene name="scene1" title="Flur" alt="100" thumburl="panos/1.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/1.tiles/preview.jpg" />
+    <image style="everpano3D_1" >
+      <cube url="panos/1.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/1.tiles/1.depth" enabled="true" scale="1.0" />
+    </image>
+
+ <!--<hotspot
+    name="pfeil" type="image"
+        url="HotspotBilder/pfeil.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-54.15" ty="97.30" tz="66.88" rotationorder="xyz" rx="-90" ry="-110" rz="0" onclick="tour_loadscene(scene7);"/> -->
+
+        <hotspot name="zuZimmer2" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-59.25" ty="22.80" tz="58.97" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="90" onclick="tour_loadscene(scene7)" />
+
+
+ <!--<hotspot
+    name="pfeil1" type="image"
+        url="HotspotBilder/pfeil1.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="43.97" ty="98.30" tz="21.12" rotationorder="xyz" rx="-90" ry="-290" rz="0" onclick="tour_loadscene(scene5);"/> -->
+
+          <hotspot name="zuWohnzimmer" url="HotspotBilder/animatedhotspot_white1.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="50.96" ty="15.70" tz="27.12" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="90" onclick="tour_loadscene(scene5)" /> 
+
+  
+ <!-- <hotspot
+    name="pfeil2" type="image"
+        url="HotspotBilder/pfeil2.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-64.49" ty="48.60" tz="46.41" rotationorder="xyz" rx="-90" ry="-200" rz="0" onclick="tour_loadscene(scene6);"/> -->
+
+  
+
+        <hotspot name="zuZimmer1" url="HotspotBilder/animatedhotspot_white2.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="7.73" ty="17.60" tz="-32.68" scale="0.080" rotationorder="xyz" rx="0" rz="0" ry="0" onclick="tour_loadscene(scene6)" /> 
+
+ <!--<hotspot
+    name="pfeil3" type="image"
+        url="HotspotBilder/pfeil3.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-44.37" ty="96.60" tz="-26.86" rotationorder="xyz" rx="-90" ry="-110" rz="0" onclick="tour_loadscene(scene8);"/> -->
+
+       <hotspot name="zuZimmer3" url="HotspotBilder/animatedhotspot_white3.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-177.49" ty="62.30" tz="-84.93" scale="0.200" rotationorder="xyz" rx="0" rz="0" ry="90" onclick="tour_loadscene(scene8)" /> 
+
+
+  
+ <!-- <hotspot
+    name="pfeil4" type="image"
+        url="HotspotBilder/pfeil4.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-44.62" ty="93.60" tz="95.76" rotationorder="xyz" rx="-90" ry="-380" rz="0" onclick="tour_loadscene(scene0);"/> -->
+
+        <hotspot name="zuBad" url="HotspotBilder/animatedhotspot_white4.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-43.13" ty="40.10" tz="111.24" scale="0.100" rotationorder="xyz" rx="0" rz="0" onclick="tour_loadscene(scene0)" /> 
+
+</scene>
+
+
+
+
+
+
+  
+
+  <!-- Flurzu -->
+<scene name="scene2" title="Flurzu" alt="100" thumburl="panos/2.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/2.tiles/preview.jpg" />
+    <image style="everpano3D_2" >
+      <cube url="panos/2.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/2.tiles/2.depth" enabled="true" scale="1.0" />
+    </image>
+
+</scene>
+  
+
+
+
+
+
+
+
+  <!-- Küche -->
+<scene name="scene3" title="Küche" alt="100" thumburl="panos/3.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/3.tiles/preview.jpg" />
+    <image style="everpano3D_3" >
+      <cube url="panos/3.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/3.tiles/3.depth" enabled="true" scale="1.0" />
+    </image>
+
+ <!--<hotspot
+    name="pfeil2" type="image"
+        url="HotspotBilder/pfeil2.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-33.55" ty="89.50" tz="-14.11" rotationorder="xyz" rx="-90" ry="-120" rz="0" onclick="tour_loadscene(scene5);"/> -->
+
+
+<hotspot name="spot1" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" 
+  depthbuffer="true" torigin="world" tx="-36.63" ty="15.90" tz="-22.04" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="50" onclick="tour_loadscene(scene5)"  />
+
+ <hotspot  name="Schild_Küche" type="image" url="HotspotBilder/Küche.png" distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-14.09" ty="-19.70" tz="49.43" scale="0.050"
+        title="Schild" rotationorder="xyz" rx="0" rz="0" ry="-30"
+        onclick="if(scale === 0.050, tween(scale, 0.080),tween(scale,0.050));" /> 
+
+</scene>
+  
+
+ 
+  
+
+
+
+
+  <!-- Veranda -->
+<scene name="scene4" title="Veranda" alt="100" thumburl="panos/4.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/4.tiles/preview.jpg" />
+    <image style="everpano3D_4" >
+      <cube url="panos/4.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/4.tiles/4.depth" enabled="true" scale="1.0" />
+    </image>
+
+
+ <!-- <hotspot
+    name="pfeil1" type="image"
+        url="HotspotBilder/pfeil1.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-8.45" ty="96.50" tz="-66.61" rotationorder="xyz" rx="-90" ry="-170" rz="0" onclick="tour_loadscene(scene5);"/> -->
+
+<hotspot name="spot1" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 30);" 
+  distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-8.97" ty="21.10" tz="-87.84" scale="0.100" onclick="tour_loadscene(scene5)" />
+
+ <hotspot  name="Schild_Veranda" type="image" url="HotspotBilder/Veranda.png" distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-109.52" ty="19.90" tz="-78.80" scale="0.100"
+        title="Schild" rotationorder="xyz" rx="180" rz="180" ry="-10"
+        onclick="if(scale === 0.100, tween(scale, 0.200),tween(scale,0.100));"/> 
+
+</scene>
+
+
+
+  
+
+
+
+
+  <!-- Wohnzimmer -->
+<scene name="scene5" title="Wohnzimmer" alt="100" thumburl="panos/5.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/5.tiles/preview.jpg" />
+    <image style="everpano3D_5" >
+      <cube url="panos/5.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/5.tiles/5.depth" enabled="true" scale="1.0" />
+    </image>
+  
+ <!-- <hotspot
+    name="pfeil1" type="image"
+        url="HotspotBilder/pfeil1.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="3.04" ty="95.80" tz="-55.77" rotationorder="xyz" rx="-90" ry="-190" rz="0" onclick="tour_loadscene(scene4);"/> -->
+
+         <hotspot name="zuVeranda" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="33.07" ty="39.60" tz="-77.18" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="0" onclick="tour_loadscene(scene4)"  />
+
+ 
+ <!-- <hotspot
+    name="pfeil2" type="image"
+        url="HotspotBilder/pfeil2.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-2.69" ty="97.40" tz="143.63" rotationorder="xyz" rx="-90" ry="-280" rz="0" onclick="tour_loadscene(scene3);"/> -->
+
+
+        <hotspot name="zuKüche" url="HotspotBilder/animatedhotspot_white1.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="2.69" ty="84.60" tz="140.25" scale="0.150"  onclick="tour_loadscene(scene3)" /> 
+
+ 
+ <!-- <hotspot
+    name="pfeil3" type="image"
+        url="HotspotBilder/pfeil3.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-68.87" ty="97.40" tz="166.52" rotationorder="xyz" rx="-90" ry="-360" rz="0" onclick="tour_loadscene(scene1);"/> -->
+
+        <hotspot name="zuFlurVonWohnzimmer" url="HotspotBilder/animatedhotspot_white2.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" depthbuffer="true" torigin="world" tx="-81.42" ty="41.30" tz="227.89" scale="0.150" onclick="tour_loadscene(scene1)"  /> 
+
+
+ <hotspot  name="Schild_Wohnzimmer" type="image" url="HotspotBilder/Wohnzimmer.png" distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="39.47" ty="-23.10" tz="75.68" scale="0.050"
+        title="Schild" rotationorder="xyz" rx="0" rz="0" ry="-15"
+        onclick="if(scale === 0.050, tween(scale, 0.080),tween(scale,0.050));" /> 
+
+</scene>
+ 
+
+
+
+  
+
+
+
+  <!-- Zimmer1 -->
+<scene name="scene6" title="Zimmer1" alt="100" thumburl="panos/6.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/6.tiles/preview.jpg" />
+    <image style="everpano3D_6" >
+      <cube url="panos/6.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/6.tiles/6.depth" enabled="true" scale="1.0" />
+    </image>
+ 
+ 
+
+ <!--<hotspot
+    name="pfeil" type="image"
+        url="HotspotBilder/pfeil.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="2.14" ty="99.60" tz="47.01" rotationorder="xyz" rx="-90" ry="-360" rz="0" onclick="tour_loadscene(scene1);"/>  -->
+
+<hotspot name="Zimmer1" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" 
+  depthbuffer="true" torigin="world" tx="-5.88" ty="24.50" tz="56.11" scale="0.100" onclick="tour_loadscene(scene1)" />
+
+</scene>
+  
+
+
+
+  
+
+
+
+  <!-- Zimmer2 -->
+<scene name="scene7" title="Zimmer2" alt="100" thumburl="panos/7.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/7.tiles/preview.jpg" />
+    <image style="everpano3D_7" >
+      <cube url="panos/7.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/7.tiles/7.depth" enabled="true" scale="1.0" />
+    </image>
+
+ <!-- <hotspot
+    name="pfeil" type="image"
+        url="HotspotBilder/pfeil.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="58.40" ty="93.00" tz="-25.66" rotationorder="xyz" rx="-90" ry="-250" rz="0" onclick="tour_loadscene(scene1);"/> -->
+
+<hotspot name="Zimmer2" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" 
+  depthbuffer="true" torigin="world" tx="81.59" ty="41.90" tz="-15.92"  scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="90" onclick="tour_loadscene(scene1)" />
+
+
+ <hotspot  name="Schild_Zimmer2" type="image" url="HotspotBilder/Zimmer.png" distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-86.53" ty="14.40" tz="69.14" scale="0.080"
+        title="Schild" rotationorder="xyz" rx="0" rz="0" ry="285"
+        onclick="if(scale === 0.080, tween(scale, 0.150),tween(scale,0.080));" /> 
+
+</scene>
+  
+
+
+
+
+
+
+
+  <!-- Zimmer3 -->
+<scene name="scene8" title="Zimmer3" alt="100" thumburl="panos/8.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/8.tiles/preview.jpg" />
+    <image style="everpano3D_8" >
+      <cube url="panos/8.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/8.tiles/8.depth" enabled="true" scale="1.0" />
+    </image>
+
+ <!--<hotspot
+    name="pfeil" type="image"
+        url="HotspotBilder/pfeil.png" vcenter="true"
+        width="150" height="100" scale="0.1" alpha="1"
+        bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+        oversampling="2" mipmapping="true" zorder="1"
+        distorted="true" depth="0" depthbuffer="true"
+        torigin="world" tx="-36.27" ty="98.10" tz="-71.76" rotationorder="xyz" rx="-90" ry="-130" rz="0" onclick="tour_loadscene(scene1);"/> -->
+
+
+  <hotspot name="Zimmer3" url="HotspotBilder/animatedhotspot_white.png" onloaded="do_crop_animation(64,64, 60);" distorted="true" depth="0" 
+    depthbuffer="true" torigin="world" tx="-58.35" ty="41.70" tz="-68.72" scale="0.100" rotationorder="xyz" rx="0" rz="0" ry="40" onclick="tour_loadscene(scene1)"/>
+
+<!--
+  <hotspot  name="Schild_Zimmer3" type="image" url="HotspotBilder/Zimmer.png" distorted="true"
+        tx="-1055.31" ty="272.60" tz="-1150.53" scale="0.400"
+        title="Schild" rotationorder="xyz" rx="180" rz="180" ry="-30"
+        onclick="if(scale === 0.400, tween(scale, 0.850),tween(scale,0.400));"/> -->
+
+</scene>
+</krpano>
