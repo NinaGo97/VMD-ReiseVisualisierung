@@ -1,0 +1,250 @@
+<krpano>
+  <display depthmaprendermode="3dmodel" />
+
+  <!-- a little helper editor tool, change the if="0" to if="1" to use it -->
+  <include url="tour_edithelper.xml" if="0" />
+
+  <!-- several helpers-->
+  <include url="%VIEWER%/plugins/contextmenu.xml" />
+  <include url="%VIEWER%/plugins/webvr.xml" />
+  <include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+
+  <action name="webvr_show_fakemode_info">
+    <!-- hide the 'Simulated WebVR Mode' message from the webvr.xml by redefining this action -->
+  </action>
+
+  <!-- <display depthmaprendermode="depthmap" /> -->
+  <!-- depthmaprendermode:
+	 - "depthmap" (default)
+		 - generates an internal 24bit depthmap image
+		 - fastest to load
+		 - no "holes", everything is "connected/filled"
+		 - not perfectly accurate
+	 - "3dmodel"
+		 - uses the 3d model and maps the pano onto it
+		 - slower because the 3d model internally needs to get sub-divided into many small triangles
+-->
+  <!-- SYSTEM FOR HAVING ALL HOTSPOTS FROM EVERY PANORAMA -->
+  <style name="everpano3d_0" panoname="IMG_20200617_210052_706" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene0" />
+  <style name="everpano3d_1" panoname="IMG_20200617_210111_555" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene1" />
+  <style name="everpano3d_2" panoname="IMG_20200617_210112_666" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene2" />
+  <style name="everpano3d_3" panoname="IMG_20200617_210114_866" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene3" />
+  <style name="everpano3d_4" panoname="IMG_20200617_210115_943" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene4" />
+  <style name="everpano3d_5" panoname="IMG_20200617_210117_074" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene5" />
+  <style name="everpano3d_6" panoname="IMG_20200617_210118_130" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene6" />
+  <style name="everpano3d_7" panoname="IMG_20200617_210119_543" prealign="0|0|0" ox="0.000" oy="0" oz="0.000" linkedscene="scene7" />
+
+  <!-- skin_tooltip - style for the thumb, hotspot and mapspot tooltips -->
+  <style name="skin_tooltips"
+         onover.addevent.mouse="copy(layer[skin_tooltip].html, tooltip);
+	                     set(layer[skin_tooltip].visible, calc(webvr.isenabled ? false : true));
+	                     tween(layer[skin_tooltip].alpha, 1.0, 0.1);
+	                     asyncloop(hovering, copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );"
+         onout.addevent.mouse="tween(layer[skin_tooltip].alpha, 0.0, 0.1, default, set(layer[skin_tooltip].visible,false), copy(layer[skin_tooltip].x,mouse.stagex); copy(layer[skin_tooltip].y,mouse.stagey); );"
+  />
+
+
+  <!-- the tooltip textfield -->
+  <layer name="skin_tooltip" keep="true"
+         type="text"
+         parent="STAGE"
+         visible="false" alpha="0" enabled="false" zorder="2"
+         align="lefttop" edge="bottom" oy="-2" width="auto"
+         bg="false"
+         textshadow="get:skin_settings.design_text_shadow" textshadowrange="6.0" textshadowangle="90" textshadowcolor="0x000000" textshadowalpha="1.0"
+         css="calc:skin_settings.design_text_css + ' text-align:center; font-size:16px; background-color:white; text-align:center;'"
+         html=""
+  />
+
+
+  <action name="startup" autorun="onstart">
+    if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
+    loadscene(get(startscene), null, MERGE);
+    if(startactions !== null, startactions() );
+  </action>
+
+  <action name="tour_loadscene" scope="local" args="scenename">
+    loadscene(get(scenename), null, MERGE|KEEPVIEW|KEEPMOVING, BLEND(2.0));
+  </action>
+
+
+  <!-- sounds -->
+  <!-- Soundinterface -->
+  <plugin name="soundinterface" preload="true" keep="true"
+          url.flash="%VIEWER%/plugins/soundinterface.swf"
+          url.html5="%VIEWER%/plugins/soundinterface.js"
+          rootpath="%VIEWER%/assets/sounds/"
+  />
+
+  <action name="eingang">
+    if(sound[s1],
+    destroysound(s1);
+    ,
+    playsound(s1, 'eingang.mp3', get(name), false, 1.0);
+    );
+  </action>
+  <action name="bettwaesche">
+    if(sound[s2],
+    destroysound(s2);
+    ,
+    playsound_at_hotspot(s2, 'bettwaesche.mp3', get(name), false, 1.0);
+    );
+  </action>
+  <action name="schlafcouch">
+    if(sound[s3],
+    destroysound(s3);
+    ,
+    playsound_at_hotspot(s3, 'schlafcouch.mp3', get(name), false, 1.0);
+    );
+  </action>
+  <action name="balkon">
+    if(sound[s4],
+    destroysound(s4);
+    ,
+  playsound_at_hotspot(s4, 'balkon.mp3', get(name), false, 1.0);
+    );
+  </action>
+  <action name="geschirr">
+    if(sound[s5],
+    destroysound(s5);
+    ,
+  playsound_at_hotspot(s5, 'geschirr.mp3', get(name), false, 1.0);
+    );
+  </action>
+
+  
+  <!-- SCENES -->
+  <!-- Eingang draußen -->
+  <scene name="scene0" title="Eingang" alt="100" thumburl="panos/0.tiles/snapshot.jpg" autoload="true" >
+    <view hlookat="188" vlookat="10" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/0.tiles/preview.jpg" />
+    <image style="everpano3D_0" >
+      <cube url="panos/0.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+    </image>
+    <hotspot  name="info" type="image" url="assets/images/icons/info.png" distorted="true" zorder="5" alpha="0"
+              tx="4" ty="0" tz="-40" scale="0.04"
+              title="info" rotationorder="xyz" rx="0" rz="0"
+              onloaded="eingang();"
+              onclick="tour_loadscene(scene5);"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="Eingang"/>
+  </scene>
+  <!-- Badezimmer -->
+  <scene name="scene1" title="Badezimmer" alt="100" thumburl="panos/1.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/1.tiles/preview.jpg" />
+    <image style="everpano3D_1" >
+      <cube url="panos/1.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/1.tiles/1.depth" enabled="true" scale="1.0" />
+    </image>
+    <hotspot  name="navigation-wohnzimmer" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="1"
+              tx="19" ty="7" tz="24" scale="0.02"
+              title="navigation-wohnzimmer" rotationorder="xyz" rx="0" rz="0" ry="70"
+              onclick="tour_loadscene(scene4);"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene4].title"/>
+  </scene>
+  <!-- Küche  -->
+  <scene name="scene2" title="Küche" alt="100" thumburl="panos/2.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/2.tiles/preview.jpg" />
+    <image style="everpano3D_2" >
+      <cube url="panos/2.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/2.tiles/2.depth" enabled="true" scale="1.0" />
+    </image>
+    <hotspot  name="navigation-wohnzimmer" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="1"
+              tx="5" ty="32" tz="70" scale="0.02"
+              title="navigation-wohnzimmer" rotationorder="xyz" rx="0" rz="0" ry="0"
+              onclick="tour_loadscene(scene4);"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene4].title"/>
+    <hotspot  name="info-geschirr" type="image" url="assets/images/icons/info.png" distorted="true" zorder="1" alpha="0"
+              tx="43" ty="-12" tz="-67" scale="0.04"
+              title="info-geschirr" rotationorder="xyz" rx="0" rz="0" ry="0"
+              onclick="geschirr();"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="Geschirr"/>
+  </scene>
+  <!-- unused -->
+  <scene name="scene3" title="IMG_20200617_210114_866" alt="100" thumburl="panos/3.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/3.tiles/preview.jpg" />
+    <image style="everpano3D_3" >
+      <cube url="panos/3.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+    </image>
+  </scene>
+  <!-- Wohnzimmer -->
+  <scene name="scene4" title="Wohnzimmer" alt="100" thumburl="panos/4.tiles/snapshot.jpg"  >
+    <view hlookat="8" vlookat="35" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/4.tiles/preview.jpg" />
+    <image style="everpano3D_4" >
+      <cube url="panos/4.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/4.tiles/4.depth" enabled="true" scale="1.0" />
+    </image>
+    <hotspot  name="navigation-bad" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="1"
+              tx="-83" ty="20" tz="18" scale="0.02"
+              title="navigation-bad" rotationorder="xyz" rx="0" rz="0" ry="70"
+              onclick="tour_loadscene(scene1);"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene1].title" />
+    <hotspot  name="navigation-kueche" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="1"
+              tx="-30" ty="10" tz="-90" scale="0.02"
+              title="navigation-kueche" rotationorder="xyz" rx="0" rz="0" ry="0"
+              onclick="tour_loadscene(scene2);"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene2].title" />
+    <hotspot  name="navigation-schlafzimmer" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="1"
+              tx="-24" ty="5" tz="72" scale="0.02"
+              title="navigation-schlafzimmer" rotationorder="xyz" rx="0" rz="-20" ry="150"
+              onclick="tour_loadscene(scene5);"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene5].title"/>
+    <hotspot  name="info-couch" type="image" url="assets/images/icons/info.png" distorted="true" zorder="1" alpha="0"
+              tx="131" ty="60" tz="15" scale="0.06"
+              title="info-couch" rotationorder="xyz" rx="0" rz="0" ry="70"
+              onclick="schlafcouch();"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="Schlafcouch"/>
+    <hotspot  name="info-balkon" type="image" url="assets/images/icons/info.png" distorted="true" zorder="1" alpha="0"
+              tx="247" ty="30" tz="-95" scale="0.06"
+              title="info-balkon" rotationorder="xyz" rx="0" rz="0" ry="70"
+              onclick="balkon();"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="Balkon"/>
+  </scene>
+  <!-- Schlafzimmer -->
+  <scene name="scene5" title="Schlafzimmer" alt="100" thumburl="panos/5.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/5.tiles/preview.jpg" />
+    <image style="everpano3D_5" >
+      <cube url="panos/5.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+      <depthmap  url="panos/5.tiles/5.depth" enabled="true" scale="1.0" />
+    </image>
+
+    <hotspot  name="info" type="image" url="assets/images/icons/info.png" distorted="true" zorder="5"
+              tx="56" ty="90" tz="65" scale="0.04"
+              title="info" rotationorder="xyz" rx="90" rz="180" ry="140"
+              onclick="bettwaesche();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="Bettwäsche"/>
+
+    <hotspot  name="navigation" type="image" url="assets/images/icons/pfeil.png" distorted="true" zorder="5"
+              tx="-46" ty="47" tz="65" scale="0.03"
+              title="navigation" rotationorder="xyz" rx="0" rz="0" ry="-40"
+              onclick="tour_loadscene(scene4);"
+              ondown="dragspot();"
+              depth="0" depthbuffer="true" torigin="world" style="roomspot|skin_tooltips" tooltip="get:scene[scene4].title"/>
+
+  </scene>
+  <!-- unused  -->
+  <scene name="scene6" title="IMG_20200617_210118_130" alt="100" thumburl="panos/6.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/6.tiles/preview.jpg" />
+    <image style="everpano3D_6" >
+      <cube url="panos/6.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+    </image>
+  </scene>
+  <!-- unused -->
+  <scene name="scene7" title="IMG_20200617_210119_543" alt="100" thumburl="panos/7.tiles/snapshot.jpg"  >
+    <view hlookat="0" vlookat="0" fov="120.00"  fovtype="MFOV" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+    <preview url="panos/7.tiles/preview.jpg" />
+    <image style="everpano3D_7" >
+      <cube url="panos/7.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1024,2048" />
+    </image>
+  </scene>
+</krpano>
